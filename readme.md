@@ -4,10 +4,16 @@ Experimental [Flask](http://flask.pocoo.org/)-based application to do basic anal
 
 # Running the web server
 
-Pre-requisites: Python 2.7 installed
+Pre-requisites: Python 2.7 installed, Redis running
 
+In one shell:
 ```
-$ python app.py
+$ rq worker
+```
+
+In another shell:
+```
+$ python server.py
 ```
 
 Visit on [http://localhost:5000](http://localhost:5000)

@@ -1,8 +1,12 @@
-import requests
+import time
 from flask import Flask, jsonify, make_response
-app = Flask(__name__)
+from redis import Redis
+from rq import Queue
+from fetch import fetch_user_photos
 
-INSTAGRAM_MEDIA_LINK = "https://www.instagram.com/{username}/media/"
+app = Flask(__name__)
+request_queue = Queue(connection=Redis())
+
 
 @app.route("/")
 def index():
@@ -21,10 +25,14 @@ def get_users():
 
 @app.route("/api/users/<username>")
 def get_user_media(username):
-    url = INSTAGRAM_MEDIA_LINK.format(username=username)
-    response = requests.get(url);
-    if response.status_code == 200:
-        data = response.json()
+    job = request_queue.enqueue(fetch_user_photos, username)
+    time.sleep(7)
+
+    result = job.result
+    if result is None:
+        return jsonify({"msg": "Still processing :("})
+    elif result.status_code == 200:
+        data = result.json()
         return jsonify(**data)
     else:
         return jsonify({"msg": "Oh gawd no"})
