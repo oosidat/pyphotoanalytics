@@ -2,7 +2,13 @@
 
 Experimental [Flask](http://flask.pocoo.org/)-based application to do basic analytics on public Instagram media
 
-# Running the web server
+## Installing dependencies
+
+```
+$ pip install flask redis rq
+```
+
+## Running the web server
 
 Pre-requisites: Python 2.7 installed, Redis running
 
