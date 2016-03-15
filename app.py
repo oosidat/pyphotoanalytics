@@ -1,12 +1,19 @@
 import time
+import os
+
 from flask import Flask, jsonify, make_response
+from flask.ext.sqlalchemy import SQLAlchemy
 from redis import Redis
 from rq import Queue
 from fetch import fetch_user_photos
 
+
 app = Flask(__name__)
+app.config.from_object(os.environ['APP_SETTINGS'])
+db = SQLAlchemy(app)
 request_queue = Queue(connection=Redis())
 
+from models import Profile
 
 @app.route("/")
 def index():
@@ -42,4 +49,4 @@ def not_found(error):
     return make_response(jsonify({"error": "Not Found"}), 404)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
